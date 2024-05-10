@@ -1,53 +1,101 @@
-# The Quick, Draw! Dataset
-![preview](preview.jpg)
-
-The Quick Draw Dataset is a collection of 50 million drawings across [345 categories](categories.txt), contributed by players of the game [Quick, Draw!](https://quickdraw.withgoogle.com). The drawings were captured as timestamped vectors, tagged with metadata including what the player was asked to draw and in which country the player was located. You can browse the recognized drawings on [quickdraw.withgoogle.com/data](https://quickdraw.withgoogle.com/data).
-
-We're sharing them here for developers, researchers, and artists to explore, study, and learn from. If you create something with this dataset, please let us know [by e-mail](mailto:quickdraw-support@google.com) or at [A.I. Experiments](https://aiexperiments.withgoogle.com/submit).
-
-We have also released a tutorial and model for training your own drawing classifier on [tensorflow.org](https://github.com/tensorflow/docs/blob/master/site/en/r1/tutorials/sequences/recurrent_quickdraw.md).
-
-Please keep in mind that while this collection of drawings was individually moderated, it may still contain inappropriate content.
-
-## Content
-- [The raw moderated dataset](#the-raw-moderated-dataset)
-- [Preprocessed dataset](#preprocessed-dataset)
-- [Get the data](#get-the-data)
-- [Projects using the dataset](#projects-using-the-dataset)
-- [Changes](#changes)
-- [License](#license)
-
-
-## The raw moderated dataset
-The raw data is available as [`ndjson`](http://ndjson.org/) files seperated by category, in the following format: 
-
-| Key          | Type                   | Description                                  |
-| ------------ | -----------------------| -------------------------------------------- |
-| key_id       | 64-bit unsigned integer| A unique identifier across all drawings.     |
-| word         | string                 | Category the player was prompted to draw.    |
-| recognized   | boolean                | Whether the word was recognized by the game. |
-| timestamp    | datetime               | When the drawing was created.                |
-| countrycode  | string                 | A two letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)) of where the player was located. |
-| drawing      | string                 | A JSON array representing the vector drawing |  
-
-
-Each line contains one drawing. Here's an example of a single drawing:
-
-```javascript
-  { 
-    "key_id":"5891796615823360",
-    "word":"nose",
-    "countrycode":"AE",
-    "timestamp":"2017-03-01 20:41:36.70725 UTC",
-    "recognized":true,
-    "drawing":[[[129,128,129,129,130,130,131,132,132,133,133,133,133,...]]]
-  }
-```
-
-The format of the drawing array is as following:
- 
-```javascript
-[ 
+<div class="Box-sc-g0xbh4-0 bJMeLZ js-snippet-clipboard-copy-unpositioned" data-hpc="true"><article class="markdown-body entry-content container-lg" itemprop="text"><div class="markdown-heading" dir="auto"><h1 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">快速，抽奖！数据集</font></font></h1><a id="user-content-the-quick-draw-dataset" class="anchor" aria-label="永久链接： 快速，抽奖！数据集" href="#the-quick-draw-dataset"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><a target="_blank" rel="noopener noreferrer" href="/googlecreativelab/quickdraw-dataset/blob/master/preview.jpg"><img src="/googlecreativelab/quickdraw-dataset/raw/master/preview.jpg" alt="预览" style="max-width: 100%;"></a></p>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quick Draw 数据集包含</font></font><a href="/googlecreativelab/quickdraw-dataset/blob/master/categories.txt"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">345 个类别的 5000 万张图画，由</font></font></a><font style="vertical-align: inherit;"></font><a href="https://quickdraw.withgoogle.com" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quick, Draw!</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">游戏的玩家贡献。 </font><font style="vertical-align: inherit;">。这些绘图被捕获为带时间戳的矢量，并标记有元数据，包括要求玩家绘制的内容以及玩家所在的国家/地区。您可以在</font></font><a href="https://quickdraw.withgoogle.com/data" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quickdraw.withgoogle.com/data</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">上浏览已识别的绘图</font><font style="vertical-align: inherit;">。</font></font></p>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">我们在这里分享它们，供开发人员、研究人员和艺术家探索、研究和学习。如果您使用此数据集创建某些内容，请</font></font><a href="mailto:quickdraw-support@google.com"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">通过电子邮件</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">或</font></font><a href="https://aiexperiments.withgoogle.com/submit" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">AI Experiments</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">告知我们</font><font style="vertical-align: inherit;">。</font></font></p>
+<p dir="auto"><font style="vertical-align: inherit;"></font><a href="https://github.com/tensorflow/docs/blob/master/site/en/r1/tutorials/sequences/recurrent_quickdraw.md"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">我们还在tensorflow.org</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">上发布了用于训练您自己的绘图分类器的教程和模型</font><font style="vertical-align: inherit;">。</font></font></p>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">请记住，虽然这组图画经过单独审核，但仍可能包含不当内容。</font></font></p>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">内容</font></font></h2><a id="user-content-content" class="anchor" aria-label="永久链接：内容" href="#content"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<ul dir="auto">
+<li><a href="#the-raw-moderated-dataset"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">原始调节数据集</font></font></a></li>
+<li><a href="#preprocessed-dataset"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">预处理数据集</font></font></a></li>
+<li><a href="#get-the-data"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">获取数据</font></font></a></li>
+<li><a href="#projects-using-the-dataset"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用数据集的项目</font></font></a></li>
+<li><a href="#changes"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">变化</font></font></a></li>
+<li><a href="#license"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">执照</font></font></a></li>
+</ul>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">原始调节数据集</font></font></h2><a id="user-content-the-raw-moderated-dataset" class="anchor" aria-label="永久链接：原始调节数据集" href="#the-raw-moderated-dataset"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">原始数据以按类别分隔的文件形式提供</font></font><a href="http://ndjson.org/" rel="nofollow"><code>ndjson</code></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">，格式如下：</font></font></p>
+<table>
+<thead>
+<tr>
+<th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">钥匙</font></font></th>
+<th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">类型</font></font></th>
+<th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">描述</font></font></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">密钥 ID</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">64 位无符号整数</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">所有图纸中的唯一标识符。</font></font></td>
+</tr>
+<tr>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">单词</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">细绳</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">提示玩家绘制的类别。</font></font></td>
+</tr>
+<tr>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">认可的</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">布尔值</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">该词是否被游戏识别。</font></font></td>
+</tr>
+<tr>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">时间戳</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">约会时间</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">当绘图被创建时。</font></font></td>
+</tr>
+<tr>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">国家代码</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">细绳</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">玩家所在位置的</font><font style="vertical-align: inherit;">两个字母的国家/地区代码 ( </font></font><a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">ISO 3166-1 alpha-2 )。</font></font></a><font style="vertical-align: inherit;"></font></td>
+</tr>
+<tr>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">绘画</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">细绳</font></font></td>
+<td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">表示矢量绘图的 JSON 数组</font></font></td>
+</tr>
+</tbody>
+</table>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">每行包含一幅图画。这是单个绘图的示例：</font></font></p>
+<div class="highlight highlight-source-js notranslate position-relative overflow-auto" dir="auto"><pre> &nbsp;<span class="pl-kos">{</span> 
+    <span class="pl-s">"key_id"</span>:<span class="pl-s">"5891796615823360"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"word"</span>:<span class="pl-s">"nose"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"countrycode"</span>:<span class="pl-s">"AE"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"timestamp"</span>:<span class="pl-s">"2017-03-01 20:41:36.70725 UTC"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"recognized"</span>:<span class="pl-c1">true</span><span class="pl-kos">,</span>
+    <span class="pl-s">"drawing"</span>:<span class="pl-kos">[</span><span class="pl-kos">[</span><span class="pl-kos">[</span><span class="pl-c1">129</span><span class="pl-kos">,</span><span class="pl-c1">128</span><span class="pl-kos">,</span><span class="pl-c1">129</span><span class="pl-kos">,</span><span class="pl-c1">129</span><span class="pl-kos">,</span><span class="pl-c1">130</span><span class="pl-kos">,</span><span class="pl-c1">130</span><span class="pl-kos">,</span><span class="pl-c1">131</span><span class="pl-kos">,</span><span class="pl-c1">132</span><span class="pl-kos">,</span><span class="pl-c1">132</span><span class="pl-kos">,</span><span class="pl-c1">133</span><span class="pl-kos">,</span><span class="pl-c1">133</span><span class="pl-kos">,</span><span class="pl-c1">133</span><span class="pl-kos">,</span><span class="pl-c1">133</span><span class="pl-kos">,</span>...<span class="pl-kos">]</span><span class="pl-kos">]</span><span class="pl-kos">]</span>
+  <span class="pl-kos">}</span></pre><div class="zeroclipboard-container">
+    <clipboard-copy aria-label="Copy" class="ClipboardButton btn btn-invisible js-clipboard-copy m-2 p-0 tooltipped-no-delay d-flex flex-justify-center flex-items-center" data-copy-feedback="Copied!" data-tooltip-direction="w" value=" &nbsp;{ 
+    &quot;key_id&quot;:&quot;5891796615823360&quot;,
+    &quot;word&quot;:&quot;nose&quot;,
+    &quot;countrycode&quot;:&quot;AE&quot;,
+    &quot;timestamp&quot;:&quot;2017-03-01 20:41:36.70725 UTC&quot;,
+    &quot;recognized&quot;:true,
+    &quot;drawing&quot;:[[[129,128,129,129,130,130,131,132,132,133,133,133,133,...]]]
+  }" tabindex="0" role="button">
+      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-copy js-clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check js-clipboard-check-icon color-fg-success d-none">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+    </clipboard-copy>
+  </div></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">绘图数组的格式如下：</font></font></p>
+<div class="highlight highlight-source-js notranslate position-relative overflow-auto" dir="auto"><pre><span class="pl-kos">[</span> 
+  <span class="pl-kos">[</span>  <span class="pl-c">// First stroke </span>
+    <span class="pl-kos">[</span><span class="pl-s1">x0</span><span class="pl-kos">,</span> <span class="pl-s1">x1</span><span class="pl-kos">,</span> <span class="pl-s1">x2</span><span class="pl-kos">,</span> <span class="pl-s1">x3</span><span class="pl-kos">,</span> ...<span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-kos">[</span><span class="pl-s1">y0</span><span class="pl-kos">,</span> <span class="pl-s1">y1</span><span class="pl-kos">,</span> <span class="pl-s1">y2</span><span class="pl-kos">,</span> <span class="pl-s1">y3</span><span class="pl-kos">,</span> ...<span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-kos">[</span><span class="pl-s1">t0</span><span class="pl-kos">,</span> <span class="pl-s1">t1</span><span class="pl-kos">,</span> <span class="pl-s1">t2</span><span class="pl-kos">,</span> <span class="pl-s1">t3</span><span class="pl-kos">,</span> ...<span class="pl-kos">]</span>
+  <span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-kos">[</span>  <span class="pl-c">// Second stroke</span>
+    <span class="pl-kos">[</span><span class="pl-s1">x0</span><span class="pl-kos">,</span> <span class="pl-s1">x1</span><span class="pl-kos">,</span> <span class="pl-s1">x2</span><span class="pl-kos">,</span> <span class="pl-s1">x3</span><span class="pl-kos">,</span> ...<span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-kos">[</span><span class="pl-s1">y0</span><span class="pl-kos">,</span> <span class="pl-s1">y1</span><span class="pl-kos">,</span> <span class="pl-s1">y2</span><span class="pl-kos">,</span> <span class="pl-s1">y3</span><span class="pl-kos">,</span> ...<span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-kos">[</span><span class="pl-s1">t0</span><span class="pl-kos">,</span> <span class="pl-s1">t1</span><span class="pl-kos">,</span> <span class="pl-s1">t2</span><span class="pl-kos">,</span> <span class="pl-s1">t3</span><span class="pl-kos">,</span> ...<span class="pl-kos">]</span>
+  <span class="pl-kos">]</span><span class="pl-kos">,</span>
+  ... <span class="pl-c">// Additional strokes</span>
+<span class="pl-kos">]</span></pre><div class="zeroclipboard-container">
+    <clipboard-copy aria-label="Copy" class="ClipboardButton btn btn-invisible js-clipboard-copy m-2 p-0 tooltipped-no-delay d-flex flex-justify-center flex-items-center" data-copy-feedback="Copied!" data-tooltip-direction="w" value="[ 
   [  // First stroke 
     [x0, x1, x2, x3, ...],
     [y0, y1, y2, y3, ...],
@@ -59,197 +107,191 @@ The format of the drawing array is as following:
     [t0, t1, t2, t3, ...]
   ],
   ... // Additional strokes
-]
-```
-
-Where `x` and `y` are the pixel coordinates, and `t` is the time in milliseconds since the first point. `x` and `y` are real-valued while `t` is an integer. The raw drawings can have vastly different bounding boxes and number of points due to the different devices used for display and input.
-
-## Preprocessed dataset
-We've preprocessed and split the dataset into different files and formats to make it faster and easier to download and explore.
-
-#### Simplified Drawing files (`.ndjson`)
-We've simplified the vectors, removed the timing information, and positioned and scaled the data into a 256x256 region. The data is exported in [`ndjson`](http://ndjson.org/) format with the same metadata as the raw format. The simplification process was:
-
-1. Align the drawing to the top-left corner, to have minimum values of 0.
-2. Uniformly scale the drawing, to have a maximum value of 255. 
-3. Resample all strokes with a 1 pixel spacing.
-4. Simplify all strokes using the [Ramer–Douglas–Peucker algorithm](https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm) with an epsilon value of 2.0.
-
-There is an example in [examples/nodejs/simplified-parser.js](examples/nodejs/simplified-parser.js) showing how to read ndjson files in NodeJS.  
-Additionally, the [examples/nodejs/ndjson.md](examples/nodejs/ndjson.md) document details a set of command-line tools that can help explore subsets of these quite large files.
-
-#### Binary files (`.bin`)
-The simplified drawings and metadata are also available in a custom binary format for efficient compression and loading.
-
-There is an example in [examples/binary_file_parser.py](examples/binary_file_parser.py) showing how to load the binary files in Python.  
-There is also an example in [examples/nodejs/binary-parser.js](examples/nodejs/binary-parser.js) showing how to read the binary files in NodeJS.
-
-#### Numpy bitmaps (`.npy`)
-All the simplified drawings have been rendered into a 28x28 grayscale bitmap in numpy `.npy` format. The files can be loaded with [`np.load()`](https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.load.html). These images were generated from the simplified data, but are aligned to the center of the drawing's bounding box rather than the top-left corner. [See here for code snippet used for generation](https://github.com/googlecreativelab/quickdraw-dataset/issues/19#issuecomment-402247262).
-
-## Get the data
-The dataset is available on Google Cloud Storage as [`ndjson`](http://ndjson.org/) files seperated by category. See the list of files in [Cloud 
-](https://console.cloud.google.com/storage/browser/quickdraw_dataset/), or read more about [accessing public datasets](https://cloud.google.com/storage/docs/access-public-data) using other methods. As an example, to easily download all simplified drawings, one way is to run the command `gsutil -m cp 'gs://quickdraw_dataset/full/simplified/*.ndjson' .` 
-
-#### Full dataset seperated by categories
-- [Raw files](https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/raw) (`.ndjson`)
-- [Simplified drawings files](https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/simplified) (`.ndjson`)
-- [Binary files](https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/binary) (`.bin`)
-- [Numpy bitmap files](https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/numpy_bitmap) (`.npy`)
-
-#### Sketch-RNN QuickDraw Dataset
-This data is also used for training the [Sketch-RNN](https://arxiv.org/abs/1704.03477) model.  An open source, TensorFlow implementation of this model is available in the [Magenta Project](https://magenta.tensorflow.org/sketch_rnn), (link to GitHub [repo](https://github.com/tensorflow/magenta/tree/master/magenta/models/sketch_rnn)).  You can also read more about this model in this Google Research [blog post](https://research.googleblog.com/2017/04/teaching-machines-to-draw.html).  The data is stored in compressed `.npz` files, in a format suitable for inputs into a recurrent neural network.
-
-In this dataset, 75K samples (70K Training, 2.5K Validation, 2.5K Test) has been randomly selected from each category, processed with [RDP](https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm) line simplification with an `epsilon` parameter of 2.0.  Each category will be stored in its own `.npz` file, for example, `cat.npz`.
-
-We have also provided the full data for each category, if you want to use more than 70K training examples.  These are stored with the `.full.npz` extensions.
-
-- [Numpy .npz files](https://console.cloud.google.com/storage/browser/quickdraw_dataset/sketchrnn)
-
-*Note:* For Python3, loading the `npz` files using `np.load(data_filepath, encoding='latin1', allow_pickle=True)`
-
-Instructions for converting Raw `ndjson` files to this `npz` format is available in this [notebook](https://github.com/hardmaru/quickdraw-ndjson-to-npz).
-
-## Projects using the dataset
-Here are some projects and experiments that are using or featuring the dataset in interesting ways. Got something to add? [Let us know!](mailto:quickdraw-support@google.com)
-
-*Creative and artistic projects*
-
-- [Letter collages](http://frauzufall.de/en/2017/google-quick-draw/) by [Deborah Schmidt](http://frauzufall.de/)
-- [Face tracking experiment](https://www.instagram.com/p/BUU8TuQD6_v/) by [Neil Mendoza](http://www.neilmendoza.com/)
-- [Faces of Humanity](http://project.laboiteatortue.com/facesofhumanity/) by [Tortue](www.laboiteatortue.com)
-- [Infinite QuickDraw](https://kynd.github.io/infinite_quickdraw/) by [kynd.info](http://kynd.info)
-- [Misfire.io](http://misfire.io/) by Matthew Collyer
-- [Draw This](http://danmacnish.com/2018/07/01/draw-this/) by [Dan Macnish](http://danmacnish.com/)
-- [Scribbling Speech](http://xinyue.de/scribbling-speech.html) by [Xinyue Yang](http://xinyue.de/)
-- illustrAItion by [Ling Chen](https://github.com/lingchen42/illustrAItion)
-- [Dreaming of Electric Sheep](https://medium.com/@libreai/dreaming-of-electric-sheep-d1aca32545dc) by [
-Dr. Ernesto Diaz-Aviles](http://ernesto.diazaviles.com/)
-
-*Data analyses*
-
-- [How do you draw a circle?](https://qz.com/994486/the-way-you-draw-circles-says-a-lot-about-you/) by [Quartz](https://qz.com/)
-- [Forma Fluens](http://formafluens.io/) by [Mauro Martino](http://www.mamartino.com/), [Hendrik Strobelt](http://hendrik.strobelt.com/) and [Owen Cornec](http://www.byowen.com/)
-- [How Long Does it Take to (Quick) Draw a Dog?](http://vallandingham.me/quickdraw/) by [Jim Vallandingham](http://vallandingham.me/)
-- [Finding bad flamingo drawings with recurrent neural networks](http://colinmorris.github.io/blog/bad_flamingos) by [Colin Morris](http://colinmorris.github.io/)
-- [Facets Dive x Quick, Draw!](https://pair-code.github.io/facets/quickdraw.html) by [People + AI Research Initiative (PAIR), Google](https://ai.google/pair)
-- [Exploring and Visualizing an Open Global Dataset](https://research.googleblog.com/2017/08/exploring-and-visualizing-open-global.html) by Google Research
-- [Machine Learning for Visualization](https://medium.com/@enjalot/machine-learning-for-visualization-927a9dff1cab) - Talk / article by Ian Johnson
-
-*Papers*
-- [A Neural Representation of Sketch Drawings](https://arxiv.org/pdf/1704.03477.pdf) by [David Ha](https://scholar.google.com/citations?user=J1j92GsxVUMC&hl=en), [Douglas Eck](https://scholar.google.com/citations?user=bLb3VdIAAAAJ&hl=en), ICLR 2018. [code](https://github.com/tensorflow/magenta/tree/master/magenta/models/sketch_rnn)
-- [Sketchmate: Deep hashing for million-scale human sketch retrieval](http://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_SketchMate_Deep_Hashing_CVPR_2018_paper.pdf) by [Peng Xu](http://www.pengxu.net/) et al., CVPR 2018.
-- [Multi-graph transformer for free-hand sketch recognition](https://arxiv.org/pdf/1912.11258.pdf) by [Peng Xu](http://www.pengxu.net/), [Chaitanya K Joshi](https://chaitjo.github.io/), [Xavier Bresson](https://www.ntu.edu.sg/home/xbresson/), ArXiv 2019. [code](https://github.com/PengBoXiangShang/multigraph_transformer)
-- [Deep Self-Supervised Representation Learning for Free-Hand Sketch](https://arxiv.org/pdf/2002.00867.pdf) by [Peng Xu](http://www.pengxu.net/) et al., ArXiv 2020. [code](https://github.com/zzz1515151/self-supervised_learning_sketch)
-- [SketchTransfer: A Challenging New Task for Exploring Detail-Invariance and the Abstractions Learned by Deep Networks](https://arxiv.org/pdf/1912.11570.pdf) by [Alex Lamb](https://sites.google.com/view/alexmlamb), [Sherjil Ozair](https://sherjilozair.github.io/), [Vikas Verma](https://scholar.google.com/citations?user=wo_M4uQAAAAJ&hl=en), [David Ha](https://scholar.google.com/citations?user=J1j92GsxVUMC&hl=en), WACV 2020.
-- [Deep Learning for Free-Hand Sketch: A Survey](https://arxiv.org/pdf/2001.02600.pdf) by [Peng Xu](http://www.pengxu.net/), ArXiv 2020.
-- [A Novel Sketch Recognition Model based on Convolutional Neural Networks](https://ieeexplore.ieee.org/document/9152911) by [Abdullah Talha Kabakus](https://www.linkedin.com/in/talhakabakus), 2nd International Congress on Human-Computer Interaction, Optimization and Robotic Applications, pp. 101-106, 2020.
-
-*Guides & Tutorials*
-- [TensorFlow tutorial for drawing classification](https://github.com/tensorflow/docs/blob/master/site/en/r1/tutorials/sequences/recurrent_quickdraw.md)
-- [Train a model in tf.keras with Colab, and run it in the browser with TensorFlow.js](https://medium.com/tensorflow/train-on-google-colab-and-run-on-the-browser-a-case-study-8a45f9b1474e) by Zaid Alyafeai
-
-*Code and tools*
-- [Quick, Draw! Polymer Component & Data API](https://github.com/googlecreativelab/quickdraw-component) by Nick Jonas
-- [Quick, Draw for Processing](https://github.com/codybenlewis/Quick-Draw-for-Processing) by [Cody Ben Lewis](https://twitter.com/CodyBenLewis)
-- [Quick, Draw! prediction model](https://github.com/keisukeirie/quickdraw_prediction_model) by Keisuke Irie 
-- [Random sample tool](http://learning.statistics-is-awesome.org/draw/) by [Learning statistics is awesome](http://learning.statistics-is-awesome.org/)
-- [SVG rendering in d3.js example](https://bl.ocks.org/enjalot/a2b28f0ed18b891f9fb70910f1b8886d) by [Ian Johnson](http://enja.org/) (read more about the process [here](https://gist.github.com/enjalot/54c4342eb7527ea523884dbfa52d174b))
-- [Sketch-RNN Classification](https://github.com/payalbajaj/sketch_rnn_classification) by Payal Bajaj
-- [quickdraw.js](https://github.com/wagenaartje/quickdraw.js) by Thomas Wagenaar
-- [~ Doodler ~](https://github.com/krishnasriSomepalli/cs50-project/) by [
-Krishna Sri Somepalli](https://krishnasrisomepalli.github.io/)
-- [quickdraw Python API](http://quickdraw.readthedocs.io) by [Martin O'Hanlon](https://github.com/martinohanlon)
-- [RealTime QuickDraw](https://github.com/akshaybahadur21/QuickDraw) by [Akshay Bahadur](http://akshaybahadur.com/)
-- [DataFlow processing](https://github.com/gxercavins/dataflow-samples/tree/master/quick-draw) by Guillem Xercavins 
-- [QuickDrawGH Rhino Plugin](https://www.food4rhino.com/app/quickdrawgh) by [James Dalessandro](https://github.com/DalessandroJ)
-- [QuickDrawBattle](https://andri.io/quickdrawbattle/) by [Andri Soone](https://github.com/ndri)
-
-
-## Changes
-
-May 25, 2017: Updated Sketch-RNN QuickDraw dataset, created `.full.npz` complementary sets.
-
-## License
-This data made available by Google, Inc. under the [Creative Commons Attribution 4.0 International license.](https://creativecommons.org/licenses/by/4.0/)
-
-## Dataset Metadata
-The following table is necessary for this dataset to be indexed by search
-engines such as <a href="https://g.co/datasetsearch">Google Dataset Search</a>.
-<div itemscope itemtype="http://schema.org/Dataset">
+]" tabindex="0" role="button">
+      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-copy js-clipboard-copy-icon">
+    <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+</svg>
+      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check js-clipboard-check-icon color-fg-success d-none">
+    <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path>
+</svg>
+    </clipboard-copy>
+  </div></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">其中</font></font><code>x</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">和</font></font><code>y</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">是像素坐标，</font></font><code>t</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">是自第一个点开始的时间（以毫秒为单位）。</font></font><code>x</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">和</font></font><code>y</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">是实数，而</font></font><code>t</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">是整数。由于用于显示和输入的设备不同，原始绘图可能具有截然不同的边界框和点数。</font></font></p>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">预处理数据集</font></font></h2><a id="user-content-preprocessed-dataset" class="anchor" aria-label="永久链接：预处理数据集" href="#preprocessed-dataset"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">我们对数据集进行了预处理并将其拆分为不同的文件和格式，以便更快、更轻松地下载和探索。</font></font></p>
+<div class="markdown-heading" dir="auto"><h4 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">简化绘图文件 ( </font></font><code>.ndjson</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></h4><a id="user-content-simplified-drawing-files-ndjson" class="anchor" aria-label="永久链接：简化的绘图文件 (.ndjson)" href="#simplified-drawing-files-ndjson"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">我们简化了向量，删除了时序信息，并将数据定位并缩放到 256x256 区域。数据</font></font><a href="http://ndjson.org/" rel="nofollow"><code>ndjson</code></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">以与原始格式相同元数据的格式导出。简化过程是：</font></font></p>
+<ol dir="auto">
+<li><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">将绘图与左上角对齐，以使最小值为 0。</font></font></li>
+<li><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">统一缩放绘图，最大值为 255。</font></font></li>
+<li><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">以 1 像素间距重新采样所有笔画。</font></font></li>
+<li><font style="vertical-align: inherit;"></font><a href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用Ramer–Douglas–Peucker 算法（</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> epsilon 值为 2.0）</font><font style="vertical-align: inherit;">简化所有笔画。</font></font></li>
+</ol>
+<p dir="auto"><font style="vertical-align: inherit;"></font><a href="/googlecreativelab/quickdraw-dataset/blob/master/examples/nodejs/simplified-parser.js"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">example/nodejs/simplified-parser.js</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">中有一个示例，</font><font style="vertical-align: inherit;">展示了如何在 NodeJS 中读取 ndjson 文件。</font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+此外，</font></font><a href="/googlecreativelab/quickdraw-dataset/blob/master/examples/nodejs/ndjson.md"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">examples/nodejs/ndjson.md</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">文档详细介绍了一组命令行工具，可以帮助探索这些相当大的文件的子集。</font></font></p>
+<div class="markdown-heading" dir="auto"><h4 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">二进制文件 ( </font></font><code>.bin</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></h4><a id="user-content-binary-files-bin" class="anchor" aria-label="永久链接：二进制文件 (.bin)" href="#binary-files-bin"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">简化的绘图和元数据还以自定义二进制格式提供，以实现高效压缩和加载。</font></font></p>
+<p dir="auto"><font style="vertical-align: inherit;"></font><a href="/googlecreativelab/quickdraw-dataset/blob/master/examples/binary_file_parser.py"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">example/binary_file_parser.py</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">中有一个示例，</font><font style="vertical-align: inherit;">展示了如何在 Python 中加载二进制文件。</font><a href="/googlecreativelab/quickdraw-dataset/blob/master/examples/nodejs/binary-parser.js"><font style="vertical-align: inherit;">example/nodejs/binary-parser.js</font></a></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+中还有一个示例，</font><font style="vertical-align: inherit;">展示了如何在 NodeJS 中读取二进制文件。</font></font><a href="/googlecreativelab/quickdraw-dataset/blob/master/examples/nodejs/binary-parser.js"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"></font></p>
+<div class="markdown-heading" dir="auto"><h4 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Numpy 位图 ( </font></font><code>.npy</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></h4><a id="user-content-numpy-bitmaps-npy" class="anchor" aria-label="永久链接：Numpy 位图 (.npy)" href="#numpy-bitmaps-npy"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">所有简化的绘图均已渲染为 numpy</font></font><code>.npy</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">格式的 28x28 灰度位图。这些文件可以通过</font></font><a href="https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.load.html" rel="nofollow"><code>np.load()</code></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">.这些图像是根据简化数据生成的，但与绘图边界框的中心而不是左上角对齐。</font></font><a href="https://github.com/googlecreativelab/quickdraw-dataset/issues/19#issuecomment-402247262" data-hovercard-type="issue" data-hovercard-url="/googlecreativelab/quickdraw-dataset/issues/19/hovercard"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">有关用于生成的代码片段，请参阅此处</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">。</font></font></p>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">获取数据</font></font></h2><a id="user-content-get-the-data" class="anchor" aria-label="固定链接：获取数据" href="#get-the-data"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"></font><a href="http://ndjson.org/" rel="nofollow"><code>ndjson</code></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">该数据集在 Google Cloud Storage 上以按类别分隔的文件</font><font style="vertical-align: inherit;">形式提供。请参阅</font></font><a href="https://console.cloud.google.com/storage/browser/quickdraw_dataset/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Cloud
+</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">中的文件列表</font><font style="vertical-align: inherit;">，或阅读有关</font><font style="vertical-align: inherit;">使用其他方法</font></font><a href="https://cloud.google.com/storage/docs/access-public-data" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">访问公共数据集的</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">更多信息。例如，要轻松下载所有简化绘图，一种方法是运行命令</font></font><code>gsutil -m cp 'gs://quickdraw_dataset/full/simplified/*.ndjson' .</code></p>
+<div class="markdown-heading" dir="auto"><h4 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">按类别分隔的完整数据集</font></font></h4><a id="user-content-full-dataset-seperated-by-categories" class="anchor" aria-label="永久链接：按类别分隔的完整数据集" href="#full-dataset-seperated-by-categories"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<ul dir="auto">
+<li><a href="https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/raw" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">原始文件</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">( </font></font><code>.ndjson</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></li>
+<li><a href="https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/simplified" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">简化的图纸文件</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">( </font></font><code>.ndjson</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></li>
+<li><a href="https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/binary" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">二进制文件</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">( </font></font><code>.bin</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></li>
+<li><a href="https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/numpy_bitmap" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Numpy 位图文件</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">( </font></font><code>.npy</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">)</font></font></li>
+</ul>
+<div class="markdown-heading" dir="auto"><h4 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Sketch-RNN QuickDraw 数据集</font></font></h4><a id="user-content-sketch-rnn-quickdraw-dataset" class="anchor" aria-label="永久链接：Sketch-RNN QuickDraw 数据集" href="#sketch-rnn-quickdraw-dataset"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">该数据还用于训练</font></font><a href="https://arxiv.org/abs/1704.03477" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Sketch-RNN</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">模型。</font></font><a href="https://magenta.tensorflow.org/sketch_rnn" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Magenta 项目</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">中提供了该模型的开源 TensorFlow 实现</font><font style="vertical-align: inherit;">（链接到 GitHub</font></font><a href="https://github.com/tensorflow/magenta/tree/master/magenta/models/sketch_rnn"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">存储库</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">）。您还可以在这篇 Google 研究</font></font><a href="https://research.googleblog.com/2017/04/teaching-machines-to-draw.html" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">博客文章</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">中了解有关此模型的更多信息。数据</font></font><code>.npz</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">以适合输入循环神经网络的格式存储在压缩文件中。</font></font></p>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">在此数据集中，从每个类别中随机选择了 75K 个样本（70K 训练、2.5K 验证、2.5K 测试），并使用参数为 2.0 的</font></font><a href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">RDP</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">线简化进行处理</font></font><code>epsilon</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">。每个类别将存储在其自己的</font></font><code>.npz</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">文件中，例如</font></font><code>cat.npz</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">.</font></font></p>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">如果您想使用超过 70K 的训练示例，我们还提供了每个类别的完整数据。这些与扩展名一起存储</font></font><code>.full.npz</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">。</font></font></p>
+<ul dir="auto">
+<li><a href="https://console.cloud.google.com/storage/browser/quickdraw_dataset/sketchrnn" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Numpy .npz 文件</font></font></a></li>
+</ul>
+<p dir="auto"><em><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">注意：</font></font></em><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">对于Python3，</font></font><code>npz</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用加载文件</font></font><code>np.load(data_filepath, encoding='latin1', allow_pickle=True)</code></p>
+<p dir="auto"><font style="vertical-align: inherit;"><a href="https://github.com/hardmaru/quickdraw-ndjson-to-npz"><font style="vertical-align: inherit;">本笔记本</font></a><font style="vertical-align: inherit;">中提供了将原始</font></font><code>ndjson</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">文件</font><font style="vertical-align: inherit;">转换为这种格式的说明</font><font style="vertical-align: inherit;">。</font></font><code>npz</code><font style="vertical-align: inherit;"></font><a href="https://github.com/hardmaru/quickdraw-ndjson-to-npz"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"></font></p>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用数据集的项目</font></font></h2><a id="user-content-projects-using-the-dataset" class="anchor" aria-label="永久链接：使用数据集的项目" href="#projects-using-the-dataset"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">以下是一些以有趣的方式使用或展示数据集的项目和实验。有什么要补充的吗？</font></font><a href="mailto:quickdraw-support@google.com"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">让我们知道！</font></font></a></p>
+<p dir="auto"><em><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">创意和艺术项目</font></font></em></p>
+<ul dir="auto">
+<li><a href="http://frauzufall.de/en/2017/google-quick-draw/" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><a href="http://frauzufall.de/" rel="nofollow"><font style="vertical-align: inherit;">Deborah Schmidt</font></a><font style="vertical-align: inherit;">的</font><a href="http://frauzufall.de/en/2017/google-quick-draw/" rel="nofollow"><font style="vertical-align: inherit;">字母拼贴画</font></a></font><a href="http://frauzufall.de/" rel="nofollow"><font style="vertical-align: inherit;"></font></a></li>
+<li><a href="https://www.instagram.com/p/BUU8TuQD6_v/" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><a href="http://www.neilmendoza.com/" rel="nofollow"><font style="vertical-align: inherit;">尼尔·门多萨</font></a><font style="vertical-align: inherit;">的</font><a href="https://www.instagram.com/p/BUU8TuQD6_v/" rel="nofollow"><font style="vertical-align: inherit;">面部追踪实验</font></a></font><a href="http://www.neilmendoza.com/" rel="nofollow"><font style="vertical-align: inherit;"></font></a></li>
+<li><a href="http://project.laboiteatortue.com/facesofhumanity/" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><a href="/googlecreativelab/quickdraw-dataset/blob/master/www.laboiteatortue.com"><font style="vertical-align: inherit;">Tortue</font></a><font style="vertical-align: inherit;">的</font><a href="http://project.laboiteatortue.com/facesofhumanity/" rel="nofollow"><font style="vertical-align: inherit;">《人性的面孔》</font></a></font><a href="/googlecreativelab/quickdraw-dataset/blob/master/www.laboiteatortue.com"><font style="vertical-align: inherit;"></font></a></li>
+<li><a href="https://kynd.github.io/infinite_quickdraw/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Infinite QuickDraw</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">由</font></font><a href="http://kynd.info" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">kynd.info提供</font></font></a></li>
+<li><a href="http://misfire.io/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Misfire.io</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：Matthew Collyer</font></font></li>
+<li><a href="http://danmacnish.com/2018/07/01/draw-this/" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><a href="http://danmacnish.com/" rel="nofollow"><font style="vertical-align: inherit;">丹·麦克尼什</font></a><font style="vertical-align: inherit;">画的</font><a href="http://danmacnish.com/2018/07/01/draw-this/" rel="nofollow"><font style="vertical-align: inherit;">这个</font></a></font><a href="http://danmacnish.com/" rel="nofollow"><font style="vertical-align: inherit;"></font></a></li>
+<li><a href="http://xinyue.de/scribbling-speech.html" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">杨</font><a href="http://xinyue.de/" rel="nofollow"><font style="vertical-align: inherit;">新月</font></a><a href="http://xinyue.de/scribbling-speech.html" rel="nofollow"><font style="vertical-align: inherit;">涂鸦演讲</font></a></font><a href="http://xinyue.de/" rel="nofollow"><font style="vertical-align: inherit;"></font></a></li>
+<li><font style="vertical-align: inherit;"><a href="https://github.com/lingchen42/illustrAItion"><font style="vertical-align: inherit;">陈凌</font></a><font style="vertical-align: inherit;">插画</font></font><a href="https://github.com/lingchen42/illustrAItion"><font style="vertical-align: inherit;"></font></a></li>
+<li><a href="https://medium.com/@libreai/dreaming-of-electric-sheep-d1aca32545dc" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><a href="http://ernesto.diazaviles.com/" rel="nofollow"><font style="vertical-align: inherit;">
+埃内斯托·迪亚兹-阿维莱斯博士</font></a><font style="vertical-align: inherit;">的</font><a href="https://medium.com/@libreai/dreaming-of-electric-sheep-d1aca32545dc" rel="nofollow"><font style="vertical-align: inherit;">《梦见电子羊》</font></a></font><a href="http://ernesto.diazaviles.com/" rel="nofollow"><font style="vertical-align: inherit;"></font></a></li>
+</ul>
+<p dir="auto"><em><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">数据分析</font></font></em></p>
+<ul dir="auto">
+<li><a href="https://qz.com/994486/the-way-you-draw-circles-says-a-lot-about-you/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">你如何画一个圆？</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">通过</font></font><a href="https://qz.com/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">石英</font></font></a></li>
+<li><a href="http://formafluens.io/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Forma Fluens</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="http://www.mamartino.com/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Mauro Martino</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">、</font></font><a href="http://hendrik.strobelt.com/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Hendrik Strobelt</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">和</font></font><a href="http://www.byowen.com/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Owen Cornec</font></font></a></li>
+<li><a href="http://vallandingham.me/quickdraw/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">（快速）画一只狗需要多长时间？</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="http://vallandingham.me/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">吉姆·瓦兰丁厄姆</font></font></a></li>
+<li><a href="http://colinmorris.github.io/blog/bad_flamingos" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用循环神经网络查找不良火烈鸟图画，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="http://colinmorris.github.io/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Colin Morris</font></font></a></li>
+<li><a href="https://pair-code.github.io/facets/quickdraw.html" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Facets Dive x 快速，绘制！</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">由</font></font><a href="https://ai.google/pair" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Google 的“人+人工智能研究计划”(PAIR)提供</font></font></a></li>
+<li><a href="https://research.googleblog.com/2017/08/exploring-and-visualizing-open-global.html" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">谷歌研究</font><a href="https://research.googleblog.com/2017/08/exploring-and-visualizing-open-global.html" rel="nofollow"><font style="vertical-align: inherit;">探索和可视化开放的全球数据集</font></a></font></li>
+<li><a href="https://medium.com/@enjalot/machine-learning-for-visualization-927a9dff1cab" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">用于可视化的机器学习</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- Ian Johnson 的演讲/文章</font></font></li>
+</ul>
+<p dir="auto"><em><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">文件</font></font></em></p>
+<ul dir="auto">
+<li><a href="https://arxiv.org/pdf/1704.03477.pdf" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">素描图的神经表示，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://scholar.google.com/citations?user=J1j92GsxVUMC&amp;hl=en" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">David Ha</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">，</font></font><a href="https://scholar.google.com/citations?user=bLb3VdIAAAAJ&amp;hl=en" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Douglas Eck</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">，ICLR 2018。</font></font><a href="https://github.com/tensorflow/magenta/tree/master/magenta/models/sketch_rnn"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">代码</font></font></a></li>
+<li><a href="http://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_SketchMate_Deep_Hashing_CVPR_2018_paper.pdf" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Sketchmate：用于百万级人体草图检索的深度哈希，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="http://www.pengxu.net/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Peng Xu</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">等人，CVPR 2018。</font></font></li>
+<li><a href="https://arxiv.org/pdf/1912.11258.pdf" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">用于徒手草图识别的多图转换器，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="http://www.pengxu.net/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Peng Xu</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">、</font></font><a href="https://chaitjo.github.io/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Chaitanya K Joshi</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">、</font></font><a href="https://www.ntu.edu.sg/home/xbresson/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Xavier Bresson</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">、ArXiv 2019。</font></font><a href="https://github.com/PengBoXiangShang/multigraph_transformer"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">代码</font></font></a></li>
+<li><a href="https://arxiv.org/pdf/2002.00867.pdf" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">用于手绘草图的深度自监督表示学习，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="http://www.pengxu.net/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Peng Xu</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">等人，ArXiv 2020。</font></font><a href="https://github.com/zzz1515151/self-supervised_learning_sketch"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">代码</font></font></a></li>
+<li><a href="https://arxiv.org/pdf/1912.11570.pdf" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SketchTransfer：一项具有挑战性的新任务，用于探索深度网络学习的细节不变性和抽象，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://sites.google.com/view/alexmlamb" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Alex Lamb</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">、</font></font><a href="https://sherjilozair.github.io/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Sherjil Ozair</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">、</font></font><a href="https://scholar.google.com/citations?user=wo_M4uQAAAAJ&amp;hl=en" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Vikas Verma</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">、</font></font><a href="https://scholar.google.com/citations?user=J1j92GsxVUMC&amp;hl=en" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">David Ha</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">，WACV 2020。</font></font></li>
+<li><a href="https://arxiv.org/pdf/2001.02600.pdf" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">徒手素描的深度学习：</font></font></a><font style="vertical-align: inherit;"></font><a href="http://www.pengxu.net/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">徐鹏</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">的调查</font><font style="vertical-align: inherit;">，ArXiv 2020。</font></font></li>
+<li><a href="https://ieeexplore.ieee.org/document/9152911" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">基于卷积神经网络的新颖草图识别模型，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://www.linkedin.com/in/talhakabakus" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Abdullah Talha Kabakus</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">，第二届国际人机交互、优化和机器人应用大会，第 101-106 页，2020 年。</font></font></li>
+</ul>
+<p dir="auto"><em><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">指南和教程</font></font></em></p>
+<ul dir="auto">
+<li><a href="https://github.com/tensorflow/docs/blob/master/site/en/r1/tutorials/sequences/recurrent_quickdraw.md"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">TensorFlow 绘图分类教程</font></font></a></li>
+<li><a href="https://medium.com/tensorflow/train-on-google-colab-and-run-on-the-browser-a-case-study-8a45f9b1474e" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用 Colab 在 tf.keras 中训练模型，并使用</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Zaid Alyafeai 的TensorFlow.js 在浏览器中运行它</font></font></li>
+</ul>
+<p dir="auto"><em><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">代码和工具</font></font></em></p>
+<ul dir="auto">
+<li><a href="https://github.com/googlecreativelab/quickdraw-component"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">快点，画画！</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> Nick Jonas 的</font><a href="https://github.com/googlecreativelab/quickdraw-component"><font style="vertical-align: inherit;">聚合物组件和数据 API</font></a></font></li>
+<li><a href="https://github.com/codybenlewis/Quick-Draw-for-Processing"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">快速绘制处理，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://twitter.com/CodyBenLewis" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Cody Ben Lewis</font></font></a></li>
+<li><a href="https://github.com/keisukeirie/quickdraw_prediction_model"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">快点，画画！</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> Keisuke Irie 的</font><a href="https://github.com/keisukeirie/quickdraw_prediction_model"><font style="vertical-align: inherit;">预测模型</font></a></font></li>
+<li><a href="http://learning.statistics-is-awesome.org/draw/" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">学习统计的</font><a href="http://learning.statistics-is-awesome.org/draw/" rel="nofollow"><font style="vertical-align: inherit;">随机样本工具</font></a></font><a href="http://learning.statistics-is-awesome.org/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">很棒</font></font></a></li>
+<li><a href="https://bl.ocks.org/enjalot/a2b28f0ed18b891f9fb70910f1b8886d" rel="nofollow"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"></font><a href="http://enja.org/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Ian Johnson</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">的</font><a href="https://bl.ocks.org/enjalot/a2b28f0ed18b891f9fb70910f1b8886d" rel="nofollow"><font style="vertical-align: inherit;">d3.js 中的 SVG 渲染示例（</font></a></font><a href="https://gist.github.com/enjalot/54c4342eb7527ea523884dbfa52d174b"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">在此处</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">阅读有关该过程的更多信息</font><font style="vertical-align: inherit;">）</font></font></li>
+<li><a href="https://github.com/payalbajaj/sketch_rnn_classification"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Payal Bajaj 的</font><a href="https://github.com/payalbajaj/sketch_rnn_classification"><font style="vertical-align: inherit;">Sketch-RNN 分类</font></a></font></li>
+<li><a href="https://github.com/wagenaartje/quickdraw.js"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quickdraw.js</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：Thomas Wagenaar</font></font></li>
+<li><a href="https://github.com/krishnasriSomepalli/cs50-project/"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">~ Doodler ~</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://krishnasrisomepalli.github.io/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+Krishna Sri Somepalli</font></font></a></li>
+<li><a href="http://quickdraw.readthedocs.io" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quickdraw Python API，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://github.com/martinohanlon"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Martin O'Hanlon</font></font></a></li>
+<li><a href="https://github.com/akshaybahadur21/QuickDraw"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">实时 QuickDraw</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">，作者：</font></font><a href="http://akshaybahadur.com/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Akshay Bahadur</font></font></a></li>
+<li><a href="https://github.com/gxercavins/dataflow-samples/tree/master/quick-draw"><font style="vertical-align: inherit;"></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Guillem Xercavins 的</font><a href="https://github.com/gxercavins/dataflow-samples/tree/master/quick-draw"><font style="vertical-align: inherit;">数据流处理</font></a></font></li>
+<li><a href="https://www.food4rhino.com/app/quickdrawgh" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">QuickDrawGH Rhino 插件，</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://github.com/DalessandroJ"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">James Dalessandro</font></font></a></li>
+<li><a href="https://andri.io/quickdrawbattle/" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">QuickDrawBattle</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">作者：</font></font><a href="https://github.com/ndri"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Andri Soone</font></font></a></li>
+</ul>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">变化</font></font></h2><a id="user-content-changes" class="anchor" aria-label="永久链接：更改" href="#changes"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2017 年 5 月 25 日：更新了 Sketch-RNN QuickDraw 数据集，创建了</font></font><code>.full.npz</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">补充集。</font></font></p>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">执照</font></font></h2><a id="user-content-license" class="anchor" aria-label="永久链接：许可证" href="#license"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"><a href="https://creativecommons.org/licenses/by/4.0/" rel="nofollow"><font style="vertical-align: inherit;">该数据由 Google, Inc. 根据Creative Commons Attribution 4.0 International 许可</font></a><font style="vertical-align: inherit;">提供。</font></font><a href="https://creativecommons.org/licenses/by/4.0/" rel="nofollow"><font style="vertical-align: inherit;"></font></a></p>
+<div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">数据集元数据</font></font></h2><a id="user-content-dataset-metadata" class="anchor" aria-label="永久链接：数据集元数据" href="#dataset-metadata"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></div>
+<p dir="auto"><font style="vertical-align: inherit;"></font><a href="https://g.co/datasetsearch" rel="nofollow"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">下表对于Google Dataset Search</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">等搜索引擎索引该数据集是必需的</font><font style="vertical-align: inherit;">。</font></font></p>
+<div itemscope="" itemtype="http://schema.org/Dataset" dir="auto">
 <table>
-  <tr>
-    <th>property</th>
-    <th>value</th>
+  <tbody><tr>
+    <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">财产</font></font></th>
+    <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">价值</font></font></th>
   </tr>
   <tr>
-    <td>name</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">姓名</font></font></td>
     <td><code itemprop="name">The Quick, Draw! Dataset</code></td>
   </tr>
   <tr>
-    <td>alternateName</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">备用名称</font></font></td>
     <td><code itemprop="alternateName">Quick Draw Dataset</code></td>
   </tr>
   <tr>
-    <td>alternateName</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">备用名称</font></font></td>
     <td><code itemprop="alternateName">quickdraw-dataset</code></td>
   </tr>
   <tr>
-    <td>url</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">网址</font></font></td>
     <td><code itemprop="url">https://github.com/googlecreativelab/quickdraw-dataset</code></td>
   </tr>
   <tr>
-    <td>sameAs</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">与...一样</font></font></td>
     <td><code itemprop="sameAs">https://github.com/googlecreativelab/quickdraw-dataset</code></td>
   </tr>
   <tr>
-    <td>description</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">描述</font></font></td>
     <td><code itemprop="description">The Quick Draw Dataset is a collection of 50 million drawings across 345 categories, contributed by players of the game "Quick, Draw!". The drawings were captured as timestamped vectors, tagged with metadata including what the player was asked to draw and in which country the player was located.\n
 \n
 Example drawings:
 ![preview](https://raw.githubusercontent.com/googlecreativelab/quickdraw-dataset/master/preview.jpg)</code></td>
   </tr>
   <tr>
-    <td>provider</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">提供者</font></font></td>
     <td>
-      <div itemscope itemtype="http://schema.org/Organization" itemprop="provider">
+      <div itemscope="" itemtype="http://schema.org/Organization" itemprop="provider" dir="auto">
         <table>
-          <tr>
-            <th>property</th>
-            <th>value</th>
+          <tbody><tr>
+            <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">财产</font></font></th>
+            <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">价值</font></font></th>
           </tr>
           <tr>
-            <td>name</td>
+            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">姓名</font></font></td>
             <td><code itemprop="name">Google</code></td>
           </tr>
           <tr>
-            <td>sameAs</td>
+            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">与...一样</font></font></td>
             <td><code itemprop="sameAs">https://en.wikipedia.org/wiki/Google</code></td>
           </tr>
-        </table>
+        </tbody></table>
       </div>
     </td>
   </tr>
   <tr>
-    <td>license</td>
+    <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">执照</font></font></td>
     <td>
-      <div itemscope itemtype="http://schema.org/CreativeWork" itemprop="license">
+      <div itemscope="" itemtype="http://schema.org/CreativeWork" itemprop="license" dir="auto">
         <table>
-          <tr>
-            <th>property</th>
-            <th>value</th>
+          <tbody><tr>
+            <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">财产</font></font></th>
+            <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">价值</font></font></th>
           </tr>
           <tr>
-            <td>name</td>
+            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">姓名</font></font></td>
             <td><code itemprop="name">CC BY 4.0</code></td>
           </tr>
           <tr>
-            <td>url</td>
+            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">网址</font></font></td>
             <td><code itemprop="url">https://creativecommons.org/licenses/by/4.0/</code></td>
           </tr>
-        </table>
+        </tbody></table>
       </div>
     </td>
   </tr>
-</table>
+</tbody></table>
 </div>
+</article></div>
